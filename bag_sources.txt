@@ -1,0 +1,16 @@
+bag files aus https://www.covid19.admin.ch/api/data/context
+"csv": {
+        "daily": {
+          "cases": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19Cases_geoRegion.csv",
+          "casesVaccPersons": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19Cases_vaccpersons.csv",
+          "hosp": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19Hosp_geoRegion.csv",
+          "hospVaccPersons": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19Hosp_vaccpersons.csv",
+          "death": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19Death_geoRegion.csv",
+          "deathVaccPersons": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19Death_vaccpersons.csv",
+          "test": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19Test_geoRegion_all.csv",
+          "testPcrAntigen": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19Test_geoRegion_PCR_Antigen.csv",
+          "hospCapacity": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19HospCapacity_geoRegion.csv",
+          "re": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19Re_geoRegion.csv",
+          "intCases": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19IntCases.csv",
+          "virusVariantsWgs": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19Variants_wgs.csv",
+          "covidCertificates": "https://www.covid19.admin.ch/api/data/20210830-b5ekyt3k/sources/COVID19Certificates.csv"
