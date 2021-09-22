@@ -4,6 +4,7 @@ import const as cn
 import pandas as pd
 import altair as alt
 from datetime import timedelta
+import json
 
 import const
 import tools
@@ -12,8 +13,9 @@ class App:
     """
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, texts):
+        self.texts = texts
+
 
     def get_description(self,numerator, denominator):
         text = f"""
@@ -119,6 +121,6 @@ The timeline for ratios shows a high variability for most cantons. Several facto
         with description:
             st.markdown(self.get_description(options_dict[numerator],options_dict[denominator]))
             
-        interpretation = st.expander("Description of method", expanded=False)
+        interpretation = st.expander("Interpretation", expanded=False)
         with interpretation:
             st.markdown(self.get_interpretation())

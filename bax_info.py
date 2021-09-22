@@ -5,12 +5,12 @@ class App:
     """
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, texts: dict):
+        self.texts = texts
 
 
     def show_info(self):
-        st.markdown(cn.INFO)
+        st.markdown(self.texts['intro'])
 
 
     def show_menu(self):

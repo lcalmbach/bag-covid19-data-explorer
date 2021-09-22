@@ -11,8 +11,8 @@ class App:
     """
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, texts):
+        self.texts = texts
 
 
     def get_wave_data(self, df, date_col):

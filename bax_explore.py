@@ -10,8 +10,9 @@ class App:
     """
     """
 
-    def __init__(self):
+    def __init__(self, texts):
         self.filename = ''
+        self.texts = texts
 
     
     def show_table(self, df):
