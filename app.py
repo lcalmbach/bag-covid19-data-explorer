@@ -31,11 +31,8 @@ img {
 
 __author__ = 'lukas calmbach'
 __author_email__ = 'lukas.calmbach@bs.ch'
-__version__ = '0.1.46'
-version_date = '2021-09-05'
-LOGGING_LEVEL = logging.DEBUG
-logger = {}
-my_name = 'covid-lagebericht'
+__version__ = '0.0.2'
+version_date = '2021-09-12'
 date_col = ''
 
 @st.cache()

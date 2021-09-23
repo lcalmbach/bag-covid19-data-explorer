@@ -96,6 +96,17 @@ class App:
                     st.altair_chart(chart)
 
 
+    def filter_waves(self, df):
+        """
+        todo: marry with region filter
+        """
+        lst_waves = list(df['wave'].unique())
+        wave_filter = st.sidebar.multiselect('Wave', lst_waves)
+        if len(wave_filter) > 0:
+            df = df.query('wave.isin(@wave_filter)')
+        return df
+
+
     def show_menu(self):
         """
         retrieves the common input for stats and charts and then calls either the stats or charts routine
@@ -104,10 +115,11 @@ class App:
         datasets_dict, ok = tools.get_datasets_list('daily')
         key = st.sidebar.selectbox("Select dataset", list(datasets_dict.keys()))
         df, date_col = tools.get_data(datasets_dict[key], 'daily')
-        df = tools.filter_regions(df)
         field = tools.filter_field(df, True)
+        df = tools.filter_regions(df)
         df, wave_interval_dict = self.get_wave_data(df, date_col)
         df = df[['wave', date_col, 'geoRegion',field]]
+        df = self.filter_waves(df)
         output = tools.get_output_type()
         if output.lower() == 'table':
             df = self.get_wave_stats(df, wave_interval_dict)
@@ -115,6 +127,10 @@ class App:
             AgGrid(df)
         else:
             self.show_wave_charts(df, wave_interval_dict, date_col)
+        
+        with st.expander("Description of method", expanded=False):
+            st.markdown(self.texts['method'])
+            
         
 
 

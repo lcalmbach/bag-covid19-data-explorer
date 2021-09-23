@@ -25,11 +25,6 @@ Since the transition from infection to hospitalization and - in the worst case -
 """
         return text
     
-    def get_interpretation(self):
-        text = f"""
-The timeline for ratios shows a high variability for most cantons. Several factors may be responsible for this unexpected behavior. First, the assumption of a constant time lag between first symptoms and hospitalization poorly reflects the actual time lag. Time lags may vary considerably, depending on the patient's age and preconditions. Also, some hospital entry data are missing for patients in long-term care, as they often stay in their current facility and are not counted as new hospital entries. However, they are counted as laboratory-confirmed cases and therefore increase the ratio cases/hospitalizations. Cantons with many hospital beds accept patients from cantons or other countries where hospital capacity is exceeded. Except for the laboratory-confirmed cases dataset, the origin of patients (e.g., hospitalized or deceased) is not available. For this reason, ratio cases/hospitalizations increase artificially for receiving cantons and decrease for cantons, forwarding their patients. This effect attenuates with larger cantons or with the CH-dataset. In general, as can be observed when filtering the data for CH, an overall tendency towards higher cases/hospitalizations ratios can be observed over time. This tendency seems to accelerate starting in April 2021.
-"""
-        return text
 
     def calc_ratio(self,df):
         df = df.query('sum7d_y > 0')
@@ -68,7 +63,11 @@ The timeline for ratios shows a high variability for most cantons. Several facto
 
         datasets_dict, ok = tools.get_datasets_list('daily')
         numerator = st.sidebar.selectbox("Numerator", ['cases', 'hospitalized'])
-        denominator = st.sidebar.selectbox("Denominator", ['hospitalized', 'deseased'])
+        lst_denominator = ['hospitalized', 'deseased']
+        if numerator in lst_denominator:
+            lst_denominator.remove(numerator)  
+        denominator = st.sidebar.selectbox("Denominator", lst_denominator)
+        
         avg_timelag = st.sidebar.number_input("Average time lag in days", 0, 31, 4)
         
         df, date_cases_col = tools.get_data(datasets_dict[options_dict[numerator]['file']], 'daily')
@@ -117,10 +116,8 @@ The timeline for ratios shows a high variability for most cantons. Several facto
             chart = self.get_ratio_chart(df, settings)
             st.altair_chart(chart)
         
-        description = st.expander("Description of method", expanded=False)
-        with description:
-            st.markdown(self.get_description(options_dict[numerator],options_dict[denominator]))
+        with st.expander("Description of method", expanded=False):
+            st.markdown(self.texts['method'].format(options_dict[numerator]['short'], options_dict[denominator]['short']))
             
-        interpretation = st.expander("Interpretation", expanded=False)
-        with interpretation:
-            st.markdown(self.get_interpretation())
+        with st.expander("Interpretation", expanded=False):
+            st.markdown(self.texts['interpretation'])
