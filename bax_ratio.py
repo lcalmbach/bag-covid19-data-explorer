@@ -15,15 +15,6 @@ class App:
 
     def __init__(self, texts):
         self.texts = texts
-
-
-    def get_description(self,numerator, denominator):
-        text = f"""
-The timeline for the ratio {numerator['short']}/{denominator['short']} allows to verify, if over time, fewer people require hospitalisation or die for a given number of infections. The desired trend is therefore towards a lower ratio. Such a trend may be influenced by better treatment techniques, less aggressive variants, more vaccinated people, more infections in age classes reacting less less severely to the virus or any combination of these. An increase in ratio may indicate the spread of more aggressive variants or the shift in infections towards more vulnerable groups. 
-        
-Since the transition from infection to hospitalization and - in the worst case - from hospitalization to death requires time, nominator and denominator groups are taken from different time intervals separated by a time lag. As described in a study by [Faes, C. et al.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7589278/), the time between symptoms onset and hospitalization lies approximately between 3 and 10.4 days, the time from hospitalization to death between 5.7 to 12.1 days. The durations highly depend on the patient's age and preconditions, which are not available in the used daily dataset. The results must be considered with extreme care. However, the user may calculate various scenarios based on different time lags. The most plausible time lag is the one causing less variation in the calculated ratios. 
-"""
-        return text
     
 
     def calc_ratio(self,df):
@@ -39,13 +30,29 @@ Since the transition from infection to hospitalization and - in the worst case -
                     tooltip=settings['tooltip'],
                     color = settings['color']
             )
+        elif settings['rolling_average_window'] > 0:
+            rad = int(settings['rolling_average_window']/2)
+            chart = alt.Chart(df, title=settings['title']).mark_line(color = 'red', size=2
+            ).transform_window(
+                rolling_mean=settings['rolling_avg'],
+                frame=[-rad, rad]
+            ).encode(
+                x='date:T',
+                y='rolling_mean:Q'
+            )
+
+            chart += alt.Chart(df).mark_point(size = 3, opacity=0.4, clip=True).encode(
+                    x=settings['x'],
+                    y=settings['y'],
+                    tooltip=settings['tooltip']
+            )
         else:
             chart = alt.Chart(df, title=settings['title']).mark_line().encode(
                     x=settings['x'],
                     y=settings['y'],
                     tooltip=settings['tooltip'],
-            )
-
+            )    
+        
         chart = chart.properties(
             width=800,
             height=300
@@ -68,7 +75,7 @@ Since the transition from infection to hospitalization and - in the worst case -
             lst_denominator.remove(numerator)  
         denominator = st.sidebar.selectbox("Denominator", lst_denominator)
         
-        avg_timelag = st.sidebar.number_input("Average time lag in days", 0, 31, 4)
+        avg_timelag = st.sidebar.number_input("Average time lag in days", 0, 31, cn.DEFAULT_LAG)
         
         df, date_cases_col = tools.get_data(datasets_dict[options_dict[numerator]['file']], 'daily')
         df_numerator = df.copy() # dont mutate the cached data
@@ -94,15 +101,24 @@ Since the transition from infection to hospitalization and - in the worst case -
             })
         group_by_canton = st.sidebar.checkbox('Group charts by canton')
         if group_by_canton:
+            rolling_average_window = st.sidebar.number_input("Rolling average window in days (0 for none)", 0,100,30)
+            common_y_axis = st.sidebar.number_input("Common y axis (0 for none)", 0,1000,0)
             for region in df['canton'].unique():
                 df_filtered = df.query('canton == @region')
                 settings = {
                     'x': alt.X('date:T', axis = alt.Axis(title = '', format = ("%b %Y"), labelAngle=45)), 
-                    'y': alt.Y(f"ratio {options_dict[numerator]['short']} per {options_dict[denominator]['short']}:Q"), 
+                    'y': alt.Y(f"ratio {options_dict[numerator]['short']} per {options_dict[denominator]['short']}:Q", 
+                        axis = alt.Axis(title = f"{options_dict[numerator]['short']} / {options_dict[denominator]['short']}")), 
                     'title': region
                     }
                 settings['tooltip'] = list(df.columns)
-                
+                settings['rolling_avg'] = f"mean(ratio {options_dict[numerator]['short']} per {options_dict[denominator]['short']})"
+                settings['rolling_average_window'] = rolling_average_window
+                if common_y_axis:
+                    settings['y'] = alt.Y(f"ratio {options_dict[numerator]['short']} per {options_dict[denominator]['short']}:Q", 
+                        axis = alt.Axis(title = f"{options_dict[numerator]['short']} / {options_dict[denominator]['short']}"),
+                        scale=alt.Scale(domain=[0, common_y_axis])
+                    )
                 chart = self.get_ratio_chart(df_filtered, settings)
                 st.altair_chart(chart)
         else:

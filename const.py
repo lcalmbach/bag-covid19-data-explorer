@@ -28,3 +28,5 @@ Additional ressources:
 FIELD_METADATA = 'https://www.covid19.admin.ch/api/data/documentation/models/sources-definitions-{}incomingdata.md#{}'
 
 TEXTS = 'texts.json'
+
+DEFAULT_LAG = 9
