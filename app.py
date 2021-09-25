@@ -29,11 +29,18 @@ img {
 </style>
 """
 
-__author__ = 'lukas calmbach'
-__author_email__ = 'lukas.calmbach@bs.ch'
-__version__ = '0.0.2'
-version_date = '2021-09-12'
-date_col = ''
+__version__ = '0.0.1' 
+__author__ = 'Lukas Calmbach'
+__author_email__ = 'lcalmbach@gmail.com'
+VERSION_DATE = '2021-09-25'
+my_icon = "🔭"
+my_name = 'FOPH-Covid19-Data-Explorer'
+GIT_REPO = 'https://github.com/lcalmbach/bag-covid19-data-explorer'
+APP_INFO = f"""<div style="background-color:powderblue; padding: 10px;border-radius: 15px;">
+    <small>App created by <a href="mailto:{__author_email__}">{__author__}</a><br>
+    version: {__version__} ({VERSION_DATE})<br>
+    <a href="{GIT_REPO}">git-repo</a>
+    """
 
 @st.cache()
 def get_texts():
@@ -41,19 +48,18 @@ def get_texts():
         
 def main():
     """
-    Initialisiert das Session state Objekt und führt die Streamlit Applikation aus.
+    shows the  main menu and calls the selected menu item
     """
 
-    # starting from version 71
     st.set_page_config(
-        page_title="BAG-covid-data-Explorer",
-        # page_icon="🦠",
+        page_title=my_name,
+        page_icon=my_icon,
         layout="wide",
         initial_sidebar_state="expanded",
     )
     texts = get_texts()
     st.markdown(STYLE, unsafe_allow_html=True)
-    st.sidebar.markdown(f"### 🦠 BAG-COVID-19 Data Explorer")
+    st.sidebar.markdown(f"### {my_icon} {my_name}")
     
     menu_action = st.sidebar.selectbox('Menu', cn.MENU_OPTIONS)
     if menu_action=='Info':
@@ -65,6 +71,7 @@ def main():
     elif menu_action == 'Analysis of waves':
         app = bax_wave.App(texts['wave']) 
     app.show_menu()
+    st.sidebar.markdown(APP_INFO,unsafe_allow_html=True)
     
 if __name__ == '__main__':
     main()
