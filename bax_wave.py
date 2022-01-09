@@ -5,7 +5,11 @@ import altair as alt
 import pandas as pd
 from st_aggrid import AgGrid
 from datetime import date
+
 import tools
+import const
+
+W_DEV = const.WAVES
 
 class App:
     """
@@ -17,22 +21,27 @@ class App:
 
     def get_wave_data(self, df, date_col):
         waves = {}
+        W_DEV = const.WAVES
         cols = st.columns(3)
         waves['wave 1'] = {}
         waves['wave 2'] = {}
         waves['wave 3'] = {}
         waves['wave 4'] = {}
-        waves['wave 1']['start'] = cols[0].date_input('Wave1 start',value=date(2020, 2, 29))
-        waves['wave 2']['start'] = cols[0].date_input('Wave2 start',value=date(2020, 9, 27))
-        waves['wave 3']['start'] = cols[0].date_input('Wave3 start',value=date(2021, 2, 14))
-        waves['wave 4']['start'] = cols[0].date_input('Wave4 start',value=date(2021, 7, 11))
+        waves['wave 5'] = {}
+        waves['wave 1']['start'] = cols[0].date_input('Wave1 start',value=W_DEV['wave 1']['date_start'])
+        waves['wave 2']['start'] = cols[0].date_input('Wave2 start',value=W_DEV['wave 2']['date_start'])
+        waves['wave 3']['start'] = cols[0].date_input('Wave3 start',value=W_DEV['wave 3']['date_start'])
+        waves['wave 4']['start'] = cols[0].date_input('Wave4 start',value=W_DEV['wave 4']['date_start'])
+        waves['wave 5']['start'] = cols[0].date_input('Wave5 start',value=W_DEV['wave 5']['date_start'])
         
-        waves['wave 1']['end'] = cols[1].date_input('Wave1 end',value=date(2020, 5, 2))
-        waves['wave 2']['end'] = cols[1].date_input('Wave2 end',value=date(2021, 2, 14))
-        waves['wave 3']['end'] = cols[1].date_input('Wave3 end',value=date(2021, 6, 11))
-        waves['wave 4']['end'] = cols[1].date_input('Wave4 end')
+        waves['wave 1']['end'] = cols[1].date_input('Wave1 end',value=W_DEV['wave 1']['date_end'])
+        waves['wave 2']['end'] = cols[1].date_input('Wave2 end',value=W_DEV['wave 2']['date_end'])
+        waves['wave 3']['end'] = cols[1].date_input('Wave3 end',value=W_DEV['wave 3']['date_end'])
+        waves['wave 4']['end'] = cols[1].date_input('Wave3 end',value=W_DEV['wave 4']['date_end'])
+        waves['wave 5']['end'] = cols[1].date_input('Wave5 end', value = date.today())
+
         df['wave'] = ''
-        for x in range(1,5):
+        for x in range(1,len(W_DEV)+1):
             key = f"wave {x}"
             waves[key]['start'] = np.datetime64(waves[key]['start'])
             waves[key]['end'] = np.datetime64(waves[key]['end'])
@@ -47,7 +56,7 @@ class App:
         df_stats = df.groupby(['wave', 'geoRegion'])[sel_field].agg(['sum','mean','max']).reset_index()
         df_stats.columns = ['wave', 'geoRegion', f"{sel_field}_sum",f"{sel_field}_mean",f"{sel_field}_max"]
         df_stats['duration'] = 0
-        for x in range(1,5):
+        for x in range(1,len(W_DEV)+1):
             key = f"wave {x}"
             diff_days = (waves[key]['end'] - waves[key]['start']).astype(int)
             df_stats.loc[df_stats['wave'] == key, 'duration'] = diff_days
@@ -64,7 +73,7 @@ class App:
             """
             fills a wave start column then calculates a days column as days = date - start of wave in days
             """
-            for x in range(1,5):
+            for x in range(1,len(W_DEV)+1):
                 key = f"wave {x}"
                 df.loc[df['wave'] == key, 'start'] = waves[key]['start']
             df['days'] = (df[date_col] - df['start']).astype('timedelta64[D]')

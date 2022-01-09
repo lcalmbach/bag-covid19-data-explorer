@@ -8,7 +8,8 @@ WAVES = {
     "wave 1": {'date_start': date(2020, 2, 29), 'date_end': date(2020, 5, 2)},
     "wave 2": {'date_start': date(2020, 9, 27), 'date_end': date(2021, 2, 14)},
     "wave 3": {'date_start': date(2021, 2, 14), 'date_end': date(2021, 6, 11)},
-    "wave 4": {'date_start': date(2021, 7, 11), 'date_end': date.today()}
+    "wave 4": {'date_start': date(2021, 7, 11), 'date_end': date(2021, 8, 10)},
+    "wave 5": {'date_start': date(2021, 10, 20), 'date_end': date.today()}
 
 }
 
