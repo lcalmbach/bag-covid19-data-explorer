@@ -32,7 +32,7 @@ img {
 __version__ = '0.0.2' 
 __author__ = 'Lukas Calmbach'
 __author_email__ = 'lcalmbach@gmail.com'
-VERSION_DATE = '2021-09-25'
+VERSION_DATE = '2022-01-09'
 my_icon = "🔭"
 my_name = 'FOPH-Covid19-Data-Explorer'
 GIT_REPO = 'https://github.com/lcalmbach/bag-covid19-data-explorer'
